@@ -1,0 +1,78 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "ports">
+<!ENTITY author    "poozer">
+<!ENTITY version   "2026.07.23.01">
+<!ENTITY md5       "dbfc52f4d248f1a2ae9721aec1507673">
+<!ENTITY pkg       "&name;-&version;-noarch-1">
+<!ENTITY launch    "Settings/Ports">
+<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;"
+        pluginURL="&repo;/ports.plg"
+        icon="ports.png"
+        min="7.0.0"
+        comment="A scannable view of every TCP/UDP listener with its owning process and Docker container."
+        support="https://github.com/marching-poozer/unraid-port-viewer">
+
+<CHANGES>
+A clean, scannable view of every TCP/UDP port your Unraid box is listening
+on, with the owning process and Docker container (when applicable) attributed
+to each. Lives under Settings -&gt; Network Services.
+
+Highlights
+- TCP + UDP, IPv4 + IPv6.
+- Resolves docker-proxy host-port mappings back to their owning container,
+  including port ranges and host-network containers.
+- Color-codes addresses by exposure so externally reachable listeners pop:
+  wildcard (0.0.0.0 / ::) and public addresses get a tint and an edge stripe;
+  LAN, link-local and localhost are de-emphasised.
+- Collapses identical IPv4/IPv6 pairs and per-interface bindings into one row
+  with an expandable +N badge so multi-binding daemons (wsdd2, avahi, etc.)
+  don't dominate the list. Same for a service listening on both TCP and UDP
+  (e.g. DNS) - one row with combined Proto chips instead of two.
+- Well-known port labels (SSH, DNS, HTTP/HTTPS, NFS, SMB, MySQL, ...).
+- Filter pills + free-text search; sortable, resizable, reorderable and
+  hideable columns with state persisted in localStorage.
+- Pure JS / PHP, no external dependencies.
+</CHANGES>
+
+<!-- Pre-install cleanup: remove any prior ports packages (defensive against
+     the old non-conformant naming scheme that upgradepkg can't merge) and
+     clear the install dir so stale .page files from earlier versions don't
+     register duplicate menu entries. Safe to re-run. -->
+<FILE Run="/bin/bash">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+</INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/&pkg;.txz">
+<URL>&repo;/archive/&pkg;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<FILE Run="upgradepkg --install-new">
+<LOCAL>&plgPATH;/&pkg;.txz</LOCAL>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+rm -rf &plgPATH;
+</INLINE>
+</FILE>
+
+</PLUGIN>

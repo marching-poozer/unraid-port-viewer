@@ -1,0 +1,33 @@
+Menu="NetworkServices"
+Title="Ports"
+Icon="ports.png"
+---
+<link  type="text/css" rel="stylesheet" href="/plugins/ports/ports.css">
+<script type="text/javascript" src="/plugins/ports/ports.js"></script>
+
+<div id="pts-app">
+  <div class="pts-controls">
+    <input type="search" id="pts-filter" placeholder="Filter port, process, container, image&hellip;">
+    <div class="pts-pills">
+      <button type="button" class="pts-pill" data-filter="tcp"         aria-pressed="true">TCP</button>
+      <button type="button" class="pts-pill" data-filter="udp"         aria-pressed="true">UDP</button>
+      <span class="pts-pill-sep"></span>
+      <button type="button" class="pts-pill" data-filter="v4"          aria-pressed="true">IPv4</button>
+      <button type="button" class="pts-pill" data-filter="v6"          aria-pressed="true">IPv6</button>
+      <span class="pts-pill-sep"></span>
+      <button type="button" class="pts-pill" data-filter="docker-only" aria-pressed="false">Docker only</button>
+    </div>
+    <span class="pts-spacer"></span>
+    <span id="pts-status" class="pts-status"></span>
+    <div class="pts-cols-wrap">
+      <button type="button" id="pts-cols-btn">Columns&nbsp;&#x25BE;</button>
+      <div id="pts-cols-popover" class="pts-cols-popover pts-hidden"></div>
+    </div>
+    <button type="button" id="pts-refresh">Refresh</button>
+  </div>
+
+  <table id="pts-table" class="pts-table">
+    <thead></thead>
+    <tbody><tr><td class="pts-empty">Loading&hellip;</td></tr></tbody>
+  </table>
+</div>

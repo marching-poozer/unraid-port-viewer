@@ -1,0 +1,19 @@
+<Plugin>
+  <Name>Ports</Name>
+
+  <Overview>A scannable view of every TCP/UDP listener on your Unraid server, with the owning process and Docker container (when applicable) attributed to each.</Overview>
+
+  <PluginURL>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/ports.plg</PluginURL>
+
+  <PluginAuthor>poozer</PluginAuthor>
+
+  <Project>https://github.com/marching-poozer/unraid-port-viewer</Project>
+
+  <ReadMe>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/README.md</ReadMe>
+
+  <Category>Tools:Utilities</Category>
+
+  <License>MIT</License>
+
+  <Screenshot>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/docs/screenshot.png</Screenshot>
+</Plugin>

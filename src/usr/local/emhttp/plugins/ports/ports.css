@@ -1,0 +1,291 @@
+#pts-app { font-family: inherit; }
+
+.pts-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.pts-controls input[type="search"] {
+  min-width: 240px;
+  flex: 1 1 280px;
+}
+.pts-spacer { flex: 1 1 auto; }
+
+/* ----- filter pills -------------------------------------------------------- */
+/* Selectors are id-scoped (#pts-app) so they win over Unraid's global button
+   theme, which would otherwise force uppercase + orange-bordered rectangles. */
+
+#pts-app .pts-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+#pts-app .pts-pill {
+  font-size: 0.85em;
+  font-weight: normal;
+  font-family: inherit;
+  line-height: 1;
+  padding: 5px 12px;
+  min-width: 0;
+  height: auto;
+  width: auto;
+  margin: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(127,127,127,0.45);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: none;
+  transition: background 0.08s, border-color 0.08s, color 0.08s;
+}
+#pts-app .pts-pill:hover {
+  border-color: rgba(127,127,127,0.85);
+  background: rgba(127,127,127,0.06);
+  color: inherit;
+}
+#pts-app .pts-pill[aria-pressed="true"] {
+  background: rgba(74, 158, 255, 0.18);
+  border-color: rgba(74, 158, 255, 0.7);
+  color: inherit;
+}
+#pts-app .pts-pill[aria-pressed="true"]:hover {
+  background: rgba(74, 158, 255, 0.28);
+}
+#pts-app .pts-pill-sep {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: rgba(127,127,127,0.35);
+  margin: 0 4px;
+}
+.pts-status { opacity: 0.7; font-variant-numeric: tabular-nums; }
+.pts-status.pts-err { color: #c33; opacity: 1; }
+
+/* ----- table ---------------------------------------------------------------- */
+
+.pts-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+.pts-table th,
+.pts-table td {
+  text-align: left;
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(127,127,127,0.2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pts-table thead th {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  background: inherit;
+}
+.pts-table thead th.pts-asc  .pts-th-label::after { content: " ▲"; opacity: 0.6; }
+.pts-table thead th.pts-desc .pts-th-label::after { content: " ▼"; opacity: 0.6; }
+
+.pts-table tbody tr.pts-docker { background: rgba(0, 128, 255, 0.06); }
+.pts-table tbody tr.pts-exposure-wildcard td:nth-child(1) { box-shadow: inset 3px 0 0 rgba(230, 130, 50, 0.85); }
+.pts-table tbody tr.pts-exposure-public   td:nth-child(1) { box-shadow: inset 3px 0 0 rgba(220, 70, 70, 0.85); }
+
+.pts-table td { vertical-align: top; }
+
+.pts-proto { white-space: normal; }
+.pts-port  { font-weight: 600; }
+.pts-mute  { opacity: 0.6; }
+.pts-empty { text-align: center; padding: 16px; opacity: 0.7; font-style: italic; }
+
+/* ----- protocol chips (Proto column) ---------------------------------------- */
+
+.pts-proto-chip {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  opacity: 0.9;
+  vertical-align: 1px;
+}
+.pts-proto-chip + .pts-proto-chip { margin-left: 4px; }
+.pts-proto-tcp { background: rgba(74, 158, 255, 0.16);  color: #7fb8ff; }
+.pts-proto-udp { background: rgba(180, 130, 230, 0.18); color: #cba3f2; }
+
+/* ----- well-known port label badge ----------------------------------------- */
+
+.pts-port-label {
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 1px 5px;
+  margin-left: 4px;
+  border-radius: 3px;
+  background: rgba(127,127,127,0.18);
+  color: inherit;
+  opacity: 0.85;
+  vertical-align: 1px;
+}
+
+/* ----- address coloring + expansion ---------------------------------------- */
+
+.pts-addr {
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+}
+.pts-addr-wildcard  { background: rgba(230, 130, 50, 0.18);  color: #ffb874; }
+.pts-addr-public    { background: rgba(220, 70, 70, 0.18);   color: #ff8a8a; }
+.pts-addr-lan       { background: rgba(127,127,127,0.10);    opacity: 0.95; }
+.pts-addr-linklocal { opacity: 0.55; }
+.pts-addr-localhost { background: rgba(80, 180, 100, 0.14);  color: #8fd09f; }
+
+#pts-app .pts-addr-toggle {
+  display: inline-block;
+  padding: 5px 11px;
+  margin-left: 10px;
+  font-size: 0.82em;
+  font-weight: normal;
+  font-family: inherit;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 4px;
+  border: none;
+  background: rgba(127,127,127,0.18);
+  color: inherit;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: 0;
+  box-shadow: none;
+  height: auto;
+  min-width: 0;
+}
+#pts-app .pts-addr-toggle:hover {
+  background: rgba(127,127,127,0.32);
+  color: inherit;
+}
+
+.pts-addr-list { white-space: normal; line-height: 1.6; }
+
+/* ----- column resize handles ----------------------------------------------- */
+
+.pts-resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+.pts-resize:hover {
+  background: rgba(127,127,127,0.4);
+}
+body.pts-resizing,
+body.pts-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* ----- columns popover ------------------------------------------------------ */
+
+.pts-cols-wrap { position: relative; }
+
+.pts-cols-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 180px;
+  background: var(--bgcolor, #2b2b2b);
+  color: inherit;
+  border: 1px solid rgba(127,127,127,0.3);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  padding: 4px 0;
+  z-index: 1000;
+}
+.pts-cols-popover.pts-hidden { display: none; }
+
+.pts-col-list {
+  position: relative;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.pts-col-row {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px 3px 4px;
+  gap: 6px;
+  user-select: none;
+}
+.pts-col-row:hover { background: rgba(127,127,127,0.08); }
+.pts-col-row.pts-dragging { opacity: 0.4; }
+
+.pts-grip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  cursor: grab;
+  opacity: 0.4;
+  flex: 0 0 auto;
+  touch-action: none;
+}
+.pts-col-row:hover .pts-grip { opacity: 0.85; }
+body.pts-dragging-col,
+body.pts-dragging-col * { cursor: grabbing !important; }
+
+.pts-col-vis {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.pts-col-vis input[type="checkbox"] { margin: 0; }
+
+.pts-drop-indicator {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--text-color, #4a90e2);
+  background: currentColor;
+  opacity: 0.7;
+  pointer-events: none;
+  border-radius: 1px;
+}
+
+.pts-col-footer {
+  border-top: 1px solid rgba(127,127,127,0.3);
+  margin-top: 4px;
+  padding: 4px 8px 2px;
+  text-align: right;
+}
+.pts-col-footer button {
+  background: transparent;
+  border: 1px solid rgba(127,127,127,0.3);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 0.8em;
+  cursor: pointer;
+  color: inherit;
+}
+.pts-col-footer button:hover { background: rgba(127,127,127,0.15); }

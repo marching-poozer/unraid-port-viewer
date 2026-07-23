@@ -1,0 +1,6 @@
+<CommunityApplications>
+  <Profile>
+    This repository contains the **Ports** plugin (Unraid Port Viewer): a scannable view of every TCP/UDP listener on your Unraid server, with the owning process and Docker container attributed to each. It's a small, personal-use utility shared in case others find it useful — see the repository README for details, and the Project link for support.
+  </Profile>
+  <WebPage>https://github.com/marching-poozer/unraid-port-viewer</WebPage>
+</CommunityApplications>
