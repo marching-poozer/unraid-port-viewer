@@ -1,0 +1,21 @@
+<Plugin>
+  <Name>Container View</Name>
+
+  <Overview>Groups and filters the Docker Containers list and the Dashboard's Docker tile by category - from a container label or category rules - with compose stack rows, group/stack actions, a filter bar and a picker to update the listed containers. Keeps Unraid's own container rows, so other Docker-page plugins keep working.</Overview>
+
+  <PluginURL>https://raw.githubusercontent.com/marching-poozer/unraid-container-view/main/containerview.plg</PluginURL>
+
+  <PluginAuthor>poozer</PluginAuthor>
+
+  <Icon>https://raw.githubusercontent.com/marching-poozer/unraid-container-view/main/docs/icon.png</Icon>
+
+  <Project>https://github.com/marching-poozer/unraid-container-view</Project>
+
+  <ReadMe>https://raw.githubusercontent.com/marching-poozer/unraid-container-view/main/README.md</ReadMe>
+
+  <Category>Tools:Utilities</Category>
+
+  <License>MIT</License>
+
+  <Screenshot>https://raw.githubusercontent.com/marching-poozer/unraid-container-view/main/docs/docker-tab.png</Screenshot>
+</Plugin>
