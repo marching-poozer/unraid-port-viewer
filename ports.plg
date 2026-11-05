@@ -3,11 +3,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "ports">
 <!ENTITY author    "poozer">
-<!ENTITY version   "2026.07.23.01">
-<!ENTITY md5       "dbfc52f4d248f1a2ae9721aec1507673">
+<!ENTITY version   "2026.11.08">
+<!ENTITY md5       "fb2fdff87bc1acb8ac6bd65ea6afd804">
 <!ENTITY pkg       "&name;-&version;-noarch-1">
 <!ENTITY launch    "Settings/Ports">
-<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main">
+<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/ports">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
@@ -39,6 +39,11 @@ Highlights
 - Filter pills + free-text search; sortable, resizable, reorderable and
   hideable columns with state persisted in localStorage.
 - Pure JS / PHP, no external dependencies.
+
+###2026.11.08
+- Moved into the combined plugins repository. The update URL is now
+  .../main/ports/ports.plg; the old root-level ports.plg stays as a copy so
+  installs of earlier versions still find this update.
 </CHANGES>
 
 <!-- Pre-install cleanup: remove any prior ports packages (defensive against

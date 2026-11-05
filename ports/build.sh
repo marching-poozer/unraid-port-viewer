@@ -74,6 +74,11 @@ sed -i \
   -e "s|<!ENTITY md5       \"[^\"]*\">|<!ENTITY md5       \"${MD5}\">|" \
   "$PLG"
 
+# Installs from before the move to ports/ look for updates at the repo root's
+# ports.plg. Keep an identical copy there; its pluginURL points at ports/, so
+# the first update moves those installs over.
+cp "$PLG" ../ports.plg
+
 echo "Built:   $OUT  ($SIZE bytes)"
 echo "MD5:     $MD5"
 echo "Stamped: $PLG -> version=$VERSION md5=$MD5"
