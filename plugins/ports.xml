@@ -7,6 +7,8 @@
 
   <PluginAuthor>poozer</PluginAuthor>
 
+  <Icon>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/docs/icon-transparent.png</Icon>
+
   <Project>https://github.com/marching-poozer/unraid-port-viewer</Project>
 
   <ReadMe>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/README.md</ReadMe>
