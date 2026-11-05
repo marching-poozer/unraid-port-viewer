@@ -11,6 +11,8 @@
 
   <Project>https://github.com/marching-poozer/unraid-port-viewer</Project>
 
+  <Support>https://forums.unraid.net/topic/201184-plugin-port-viewer/</Support>
+
   <ReadMe>https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/README.md</ReadMe>
 
   <Category>Tools:Utilities</Category>

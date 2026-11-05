@@ -17,7 +17,7 @@
         icon="ports.png"
         min="7.0.0"
         comment="A scannable view of every TCP/UDP listener with its owning process and Docker container."
-        support="https://github.com/marching-poozer/unraid-port-viewer">
+        support="https://forums.unraid.net/topic/201184-plugin-port-viewer/">
 
 <CHANGES>
 A clean, scannable view of every TCP/UDP port your Unraid box is listening
