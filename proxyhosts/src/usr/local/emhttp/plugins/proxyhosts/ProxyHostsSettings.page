@@ -1,0 +1,65 @@
+Menu="NetworkServices"
+Title="Proxy Hosts"
+Icon="proxyhosts.png"
+---
+<?php
+require_once "$docroot/plugins/proxyhosts/include/common.php";
+$s = ph_settings();
+?>
+<link type="text/css" rel="stylesheet" href="/plugins/proxyhosts/proxyhosts.css">
+
+<div id="ph-settings" class="ph-settings">
+  <h3>Nginx Proxy Manager</h3>
+  <div class="ph-field">
+    <label>NPM URL</label>
+    <input type="text" id="ph-npm-origin" value="<?= htmlspecialchars($s['npm_origin']) ?>" placeholder="http://npm.local:81">
+  </div>
+  <div class="ph-field">
+    <label>Email</label>
+    <input type="text" id="ph-npm-identity" value="<?= htmlspecialchars($s['npm_identity']) ?>">
+  </div>
+  <div class="ph-field">
+    <label>Password</label>
+    <input type="password" id="ph-npm-secret" placeholder="<?= $s['npm_secret_set'] ? '(unchanged)' : '' ?>">
+  </div>
+  <button type="button" id="ph-save-npm">Save &amp; Test</button>
+  <span id="ph-npm-status" class="ph-status"></span>
+
+  <h3>Suggested domain names</h3>
+  <div class="ph-field">
+    <label>Base domain</label>
+    <input type="text" id="ph-base-domain" value="<?= htmlspecialchars($s['base_domain']) ?>" placeholder="example.com">
+  </div>
+  <p class="ph-hint">New hosts default to &lt;container&gt;.example.com (editable before creating).</p>
+
+  <h3>Container networking</h3>
+  <div class="ph-field">
+    <label><input type="checkbox" id="ph-prefer-container-forwarding" <?= $s['prefer_container_forwarding'] ? 'checked' : '' ?>> Forward straight to the container when it shares a network with NPM</label>
+  </div>
+  <div class="ph-field">
+    <label>Shared Docker network</label>
+    <input type="text" id="ph-shared-network" value="<?= htmlspecialchars($s['shared_network']) ?>" placeholder="npm_net">
+  </div>
+  <p class="ph-hint">When a new host's target container is attached to this network (the one NPM itself uses to reach it directly), the proxy host forwards to the container's own name and port instead of the LAN-published one - one less hop, and it keeps working even if the LAN port mapping changes. Off by default; existing proxy hosts are never changed by this setting.</p>
+  <button type="button" id="ph-save-forwarding">Save</button>
+  <span id="ph-forwarding-status" class="ph-status"></span>
+
+  <h3>Pi-hole</h3>
+  <div class="ph-field">
+    <label><input type="checkbox" id="ph-pihole-enabled" <?= $s['pihole_enabled'] ? 'checked' : '' ?>> Keep a Pi-hole CNAME in sync for every proxied domain</label>
+  </div>
+  <div class="ph-field">
+    <label>Pi-hole URL</label>
+    <input type="text" id="ph-pihole-origin" value="<?= htmlspecialchars($s['pihole_origin']) ?>" placeholder="http://pihole.local">
+  </div>
+  <div class="ph-field">
+    <label>App password</label>
+    <input type="password" id="ph-pihole-password" placeholder="<?= $s['pihole_password_set'] ? '(unchanged)' : '' ?>">
+  </div>
+  <p class="ph-hint">Use a v6 <a href="https://docs.pi-hole.net/api/" target="_blank" rel="noopener">application password</a>, not your admin password. No separate CNAME target is needed - records always point at the NPM URL's own hostname, above.</p>
+  <button type="button" id="ph-save-pihole">Save &amp; Test</button>
+  <span id="ph-pihole-status" class="ph-status"></span>
+</div>
+
+<script>window.PH_CSRF_TOKEN = <?= json_encode($var['csrf_token']) ?>;</script>
+<script type="text/javascript" src="/plugins/proxyhosts/proxyhosts-settings.js"></script>

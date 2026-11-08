@@ -1,0 +1,16 @@
+Menu="Docker"
+Icon="proxyhosts.png"
+---
+<?php
+// This file's only job is the Menu="Docker" header above: Unraid's page
+// loader matches it against the native Docker page's own Menu value and
+// concatenates this file's body into that page's output (the same
+// mechanism the community Docker Folder plugin uses) instead of creating a
+// separate tab. Keep this file to markup/includes only - all the actual
+// badge/popover behaviour lives in proxyhosts.js so a bug here can't break
+// the real Docker page's own rendering.
+require_once "$docroot/plugins/proxyhosts/include/common.php";
+?>
+<link type="text/css" rel="stylesheet" href="/plugins/proxyhosts/proxyhosts.css">
+<script>window.PH_CSRF_TOKEN = <?= json_encode($var['csrf_token']) ?>;</script>
+<script type="text/javascript" src="/plugins/proxyhosts/proxyhosts.js"></script>

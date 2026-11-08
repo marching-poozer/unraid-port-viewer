@@ -1,0 +1,356 @@
+.ph-line {
+  white-space: nowrap;
+}
+
+/* Matches dynamix.js's own embedded .readmore-js-section rule exactly -
+   see proxyhosts.js's window-resize workaround. While a cell is
+   temporarily renamed to this class (so Unraid's un-debounced resize
+   handler skips it during a drag), it must look pixel-identical or the
+   whole table would visibly jitter on every resize tick instead of none. */
+.ph-readmore-paused {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Unraid's own DockerContainers.php hardcodes width:220px inline on every
+   row's td.ct-name - !important is the only way an external stylesheet
+   overrides that. Only does anything when the Folder View plugin is NOT
+   installed: with Folder View active, it unconditionally sets its own
+   inline style.width on the <th> (not this <td>) via JS, repeatedly - on
+   its own rebuild cycle, resize, and every folder expand/collapse - which
+   overrides whatever a plain CSS rule does here regardless of specificity,
+   since it's a live, different element being written to, not a one-time
+   cascade question. That case is instead handled in proxyhosts.js's
+   renderAllFromCache(), which calls Folder View's own
+   window.fv3InstallDockerTableWidthFix() after inserting new content so
+   its internal width cache gets corrected at the source, rather than
+   fighting its periodic replay of that cache from out here. */
+#docker_containers td.ct-name {
+  width: 320px !important;
+}
+
+/* The one-line control appended under the container's name/status inside
+   td.ct-name: a label (plain "No Proxy Host" text, or the host's primary
+   domain as a real link) plus one small icon button (+ to add, pencil to
+   edit) - never more than this single line, regardless of how many domains
+   a host actually has (see primaryDomainFor()'s "+N" suffix). */
+.ph-proxy-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  /* Lines up with "started"/the app name, not the app icon: the control
+     lives as a sibling of .outer directly in td.ct-name now (moved there
+     to dodge Folder View's clone-based preview building - see
+     renderContainerControl()'s comment), so it no longer inherits
+     .inner's indent automatically the way it did when nested inside
+     .outer. Unraid's own default-base.css fixes the icon at exactly
+     "i.img, img.img { width: 32px; margin-right: 10px; }" - a reliable,
+     documented global constant - so 42px reproduces that same indent here
+     without needing a live DOM measurement. */
+  margin-left: 42px;
+}
+
+.ph-proxy-label {
+  /* 1.3rem, not a hardcoded px value: matches span.appname (the container
+     name) exactly, which has no font-size rule of its own anywhere and so
+     inherits straight from body's "font-size: 1.3rem" (default-base.css) -
+     distinct from span.state ("started"/"stopped"), which is explicitly
+     set smaller at 1.1rem. rem tracks html's own "font-size: 62.5%" base
+     (1rem = 10px by default) exactly as the browser computes it, rather
+     than assuming that resolves to exactly 13px, which only holds at
+     default browser zoom/font settings. */
+  font-size: 1.3rem !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  text-decoration: none;
+  cursor: default;
+}
+
+.ph-proxy-row.ph-off .ph-proxy-label {
+  color: #888;
+}
+.ph-proxy-row.ph-on .ph-proxy-label {
+  color: #7be08a;
+  cursor: pointer;
+}
+.ph-proxy-row.ph-disabled .ph-proxy-label {
+  color: #e0b060;
+  cursor: pointer;
+}
+.ph-proxy-row.ph-unknown .ph-proxy-label {
+  color: #888;
+}
+.ph-proxy-label:hover[href] {
+  text-decoration: underline;
+}
+.ph-proxy-label.ph-proxy-paused {
+  text-decoration: line-through;
+}
+
+/* Reuses the popover's own .ph-icon-btn look (see below) but much smaller -
+   this sits inline in a table row, not inside a 290px-wide popover.
+   !important throughout: Unraid's own default-base.css has a blanket
+   "button, button[type=button]" rule with min-width:86px/font-size:1.1rem/
+   padding:8px/margin - min-width in particular isn't beaten just by also
+   setting width, since they're different properties and the min still
+   constrains the rendered size upward regardless of which width value
+   "won" the cascade. Exactly the same trap the popover's own .ph-icon-btn
+   already documents needing two classes to escape, just also needing
+   !important out here since 86px alone makes a 15-18px button impossible. */
+.ph-proxy-row .ph-icon-btn {
+  flex: none;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 10px !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  line-height: 1;
+  background: #333;
+  color: #eee;
+  border: 1px solid #555;
+  cursor: pointer;
+}
+.ph-proxy-row .ph-icon-btn:hover {
+  background: #454545;
+}
+
+.ph-popover {
+  position: absolute;
+  z-index: 999999;
+  background: #262626;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  font: 12px -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #ddd;
+  width: 290px;
+}
+
+.ph-pop-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #eee;
+}
+
+.ph-pop-hint {
+  color: #aaa;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.ph-pop-error {
+  color: #ff8080;
+  margin: 4px 0;
+  word-break: break-word;
+}
+
+.ph-popover .ph-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+  margin-bottom: 6px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #eee;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.ph-checkrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+/* --- manage-popover header: status dot + target, enable/delete --------- */
+
+.ph-pop-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.ph-pop-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ph-pop-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.ph-pop-dot-on {
+  background: #7be08a;
+}
+.ph-pop-dot-off {
+  background: #e0b060;
+}
+
+.ph-pop-target {
+  font-weight: 600;
+  color: #eee;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ph-pop-header-btns {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+/* Standard-size icon buttons used throughout the manage popover (header
+   actions, per-domain edit/pause/remove, add) - every one the same fixed
+   rounded square regardless of which Font Awesome glyph it holds, so the
+   row stays visually uniform instead of each button hugging its own icon's
+   width. ".ph-popover .ph-icon-btn" (two classes) is needed, not just
+   ".ph-icon-btn", to outrank ".ph-popover button" (one class + one
+   element - still higher specificity than a single class alone) which
+   otherwise wins the cascade and forces its own 5px/10px padding back on,
+   ballooning these past their fixed size and starving the domain-name
+   label next to them of space (that starvation, not the glyph itself, is
+   what caused the one-letter-per-line wrapping on long domain names). */
+.ph-popover .ph-icon-btn {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.ph-domain-list {
+  margin-bottom: 6px;
+}
+
+.ph-domain-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid #333;
+}
+.ph-domain-row:last-child {
+  border-bottom: none;
+}
+
+.ph-domain-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+  color: #ddd;
+}
+
+/* Paused: kept, but not currently routed - dim it and strike the text so
+   it reads clearly differently from an active domain at a glance. */
+.ph-domain-paused .ph-domain-name {
+  color: #888;
+  text-decoration: line-through;
+}
+
+.ph-domain-btns {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.ph-domain-add {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.ph-domain-add .ph-input {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 26px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  margin-bottom: 0;
+}
+
+.ph-popover button {
+  background: #333;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 2px;
+}
+.ph-popover button:hover { background: #444; }
+.ph-popover button:disabled { opacity: 0.6; cursor: default; }
+
+.ph-popover button.ph-danger {
+  border-color: #7a3333;
+  color: #ff9c9c;
+}
+.ph-popover button.ph-danger:hover { background: #4a2626; }
+
+/* --- Settings page (ProxyHostsSettings.page) ---------------------------- */
+
+.ph-settings {
+  max-width: 480px;
+}
+.ph-settings h3 {
+  margin-top: 1.5em;
+}
+.ph-settings .ph-field {
+  margin-bottom: 8px;
+}
+.ph-settings .ph-field label {
+  display: block;
+  margin-bottom: 2px;
+}
+.ph-settings .ph-field input[type="text"],
+.ph-settings .ph-field input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.ph-settings .ph-hint {
+  color: #888;
+  font-size: 0.9em;
+  margin: 4px 0 10px;
+}
+.ph-status {
+  margin-left: 8px;
+}
+.ph-status-ok { color: #7be08a; }
+.ph-status-err { color: #ff8080; }

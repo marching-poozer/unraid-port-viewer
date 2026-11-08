@@ -1,0 +1,82 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "proxyhosts">
+<!ENTITY author    "poozer">
+<!ENTITY version   "2026.11.08">
+<!ENTITY md5       "20ae9476f3ee7a78025d5972f3727dae">
+<!ENTITY pkg       "&name;-&version;-noarch-1">
+<!ENTITY launch    "Settings/ProxyHostsSettings">
+<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/proxyhosts">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;"
+        pluginURL="&repo;/proxyhosts.plg"
+        icon="proxyhosts.png"
+        min="7.0.0"
+        comment="Adds an on/off badge to each Docker port that creates/removes a matching Nginx Proxy Manager host (and Pi-hole CNAME)."
+        support="https://github.com/marching-poozer/unraid-port-viewer">
+
+<CHANGES>
+Adds a small badge next to every published port on the Docker Containers
+page. Turning it on creates a matching Nginx Proxy Manager proxy host —
+reusing an existing certificate (e.g. a wildcard) instead of requesting a
+new one; turning it off removes it. Optionally keeps a matching Pi-hole
+CNAME in sync too.
+
+Highlights
+- Badge lives directly on the native Docker page (hooks Menu="Docker", the
+  same mechanism the community Docker Folder plugin uses) - no separate tab
+  to remember to check.
+- All NPM/Pi-hole calls happen server-side via curl, so there's no browser
+  CORS/mixed-content dance and no per-browser settings to re-enter.
+- Reads container port bindings from `docker ps`/`docker inspect` directly
+  instead of scraping the rendered table text.
+- Settings (NPM login, Pi-hole app password, base domain for suggested
+  names) live under Settings -&gt; Network Services, shared by every user of
+  this WebGUI instead of living in one browser's local storage.
+
+###2026.11.08
+- Moved into the combined plugins repository (marching-poozer/unraid-port-viewer).
+  The update URL changed. Package rebuilt from the current source.
+
+###2026.10.03
+- Initial scaffold, ported from the "NPM Proxy Helper" browser extension.
+</CHANGES>
+
+<!-- Pre-install cleanup: remove any prior proxyhosts packages and clear the
+     install dir so stale .page files from earlier versions don't register
+     duplicate menu entries. Safe to re-run. -->
+<FILE Run="/bin/bash">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+</INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/&pkg;.txz">
+<URL>&repo;/archive/&pkg;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<FILE Run="upgradepkg --install-new">
+<LOCAL>&plgPATH;/&pkg;.txz</LOCAL>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+rm -rf &plgPATH;
+</INLINE>
+</FILE>
+
+</PLUGIN>
