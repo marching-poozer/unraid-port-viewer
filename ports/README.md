@@ -8,6 +8,8 @@ A clean, scannable view of every TCP/UDP port your Unraid box is listening on,
 with the owning process and Docker container (when applicable) attributed to
 each. Lives under **Settings → Network Services**.
 
+Requires Unraid 7.0 or later.
+
 ![screenshot](docs/screenshot.png)
 
 ## Highlights
@@ -29,8 +31,15 @@ each. Lives under **Settings → Network Services**.
 
 ## Install
 
-**Settings → Plugins → Install Plugin**, then paste:
+1. In the Unraid web UI, open **Plugins → Install Plugin**.
+2. Paste this URL and click **Install**:
+   ```
+   https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/ports/ports.plg
+   ```
+3. Open **Settings → Network Services → Ports**.
 
-```
-https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/ports/ports.plg
-```
+Updates appear on the **Plugins** page like any other plugin.
+
+## License
+
+MIT — see [LICENSE](../LICENSE).

@@ -4,7 +4,7 @@
 <!ENTITY name      "ports">
 <!ENTITY author    "poozer">
 <!ENTITY version   "2026.11.08">
-<!ENTITY md5       "fb2fdff87bc1acb8ac6bd65ea6afd804">
+<!ENTITY md5       "3c91ffba7fb4db75edbde4cc1dc4215f">
 <!ENTITY pkg       "&name;-&version;-noarch-1">
 <!ENTITY launch    "Settings/Ports">
 <!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/ports">

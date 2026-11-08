@@ -119,4 +119,4 @@ Development notes, the native-parity rule and the tests are in
 
 ## License
 
-MIT - see [LICENSE](LICENSE).
+MIT - see [LICENSE](../LICENSE).
