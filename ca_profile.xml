@@ -1,6 +1,6 @@
 <CommunityApplications>
   <Profile>
-    This repository lists poozer's Unraid plugins: **Ports** (Unraid Port Viewer), a scannable view of every TCP/UDP listener on your server with the owning process and Docker container attributed to each; and **Container View**, which groups and filters the Docker Containers list and Dashboard tile by category (container label or rules) instead of hand-maintained folders. Each plugin's source and README live in its own repository (see the Project link on each). They're small, personal-use utilities shared in case others find them useful.
+    This repository lists poozer's Unraid plugins: **Ports** (Unraid Port Viewer), a scannable view of every TCP/UDP listener on your server with the owning process and Docker container attributed to each; and **Container View**, which groups and filters the Docker Containers list and Dashboard tile by category (container label or rules) instead of hand-maintained folders. Each plugin's source and README live in its own folder of this repository (see the Project link on each). They're small, personal-use utilities shared in case others find them useful.
   </Profile>
   <WebPage>https://github.com/marching-poozer/unraid-port-viewer</WebPage>
 </CommunityApplications>
