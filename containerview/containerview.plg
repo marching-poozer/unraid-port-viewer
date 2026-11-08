@@ -1,0 +1,86 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "containerview">
+<!ENTITY author    "poozer">
+<!ENTITY version   "2026.11.08">
+<!ENTITY md5       "349f451b6a2c5f29f7fe8bc55d66b0ac">
+<!ENTITY pkg       "&name;-&version;-noarch-1">
+<!ENTITY launch    "Docker">
+<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/containerview">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;"
+        pluginURL="&repo;/containerview.plg"
+        icon="cubes"
+        min="7.0.0"
+        comment="Groups and filters Docker containers by category (label or rules) on the Docker tab and the Dashboard."
+        support="https://github.com/marching-poozer/unraid-port-viewer">
+
+<CHANGES>
+Groups the Docker Containers list by category - from the
+net.unraid.docker.category label, or from category rules for containers
+without one - instead of hand-maintained folders.
+
+Highlights
+- Container rows stay byte-for-byte Unraid's own markup, so other plugins
+  that read the Docker list (e.g. Proxy Hosts) keep working.
+- Compose stacks as collapsible rows; group and stack menus with
+  Start/Stop/Restart/Pause/Resume all, Update all, icons.
+- Sticky filter bar: text, Any/All category chips, state, Update ready, and
+  a picker to update the listed containers (in the background by default).
+- The Dashboard's Docker tile grouped the same way, with its own filter.
+- Settings cog beside Basic/Advanced View; "Enabled" off gives back the
+  native views. Rules, icons and settings live in /boot/config/plugins/containerview
+  and are kept if the plugin is removed.
+
+###2026.11.08
+- Moved into the combined plugins repository (marching-poozer/unraid-port-viewer).
+  The update URL changed; no functional changes.
+
+###2026.11.05
+- First release.
+</CHANGES>
+
+<FILE Name="&plgPATH;/&pkg;.txz">
+<URL>&repo;/archive/&pkg;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<!-- Cleanup, only once the new package is on the flash (a failed download
+     stops the install above and leaves the old version running): remove any
+     prior containerview packages and clear the install dir (also a
+     dev-deploy.sh copy) so stale files from earlier versions don't linger.
+     Safe to re-run. -->
+<FILE Run="/bin/bash">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+# Only the current package stays on the flash.
+find &plgPATH; -maxdepth 1 -name '&name;-*.txz' ! -name '&pkg;.txz' -delete 2&gt;/dev/null || true
+</INLINE>
+</FILE>
+
+<FILE Run="upgradepkg --install-new">
+<LOCAL>&plgPATH;/&pkg;.txz</LOCAL>
+</FILE>
+
+<!-- Remove: the package and its files; the user's rules.json,
+     settings.json, stack-icons.json and group-icons.json stay on the flash. -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+rm -f &plgPATH;/&name;-*.txz
+</INLINE>
+</FILE>
+
+</PLUGIN>

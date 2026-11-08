@@ -1,0 +1,238 @@
+/* Our stand-in for native readmore: long cells collapse to exactly two lines. */
+#docker_list span.docker_readmore.cv-clamp { display: block; max-height: 32px; max-height: 2lh; overflow: hidden; }
+#docker_list span.docker_readmore.cv-clamp.cv-open { max-height: none; }
+#docker_list .cv-more { display: block; text-align: center; }
+
+/* Group and compose-stack header rows: name on the left, stats on the right. */
+#docker_list tr.cv-group, #docker_list tr.cv-stack { cursor: pointer; user-select: none; }
+/* The rule sits inside the header (on .cv-hd), so the cell's bottom padding
+   gives the same 10px gap below it as the top padding gives above. */
+#docker_list tr.cv-group > td { padding: 10px 8px; font-weight: bold; font-size: 1.1em; }
+#docker_list tr.cv-group .cv-hd { padding-bottom: 6px; border-bottom: 1px solid currentColor; }
+/* Sized to the visible width (--cv-vw, set in JS) rather than the table, and
+   pinned left on horizontal scroll, so the stats never end up off-screen. */
+#docker_list .cv-hd { display: flex; align-items: center; gap: 10px; box-sizing: border-box;
+  width: calc(var(--cv-vw, 100%) - 16px); position: sticky; left: 8px; }
+#docker_list .cv-stats { margin-left: auto; display: inline-flex; align-items: center; gap: 14px; font-weight: normal; }
+#docker_list .cv-stats > .cv-count, #docker_list .cv-stats > .cv-load { opacity: .7; }
+#docker_list .cv-chev { width: 1em; transition: transform .15s; }
+#docker_list .cv-chev.cv-closed { transform: rotate(-90deg); }
+/* Stack rows match a container row: same padding, 32px icon, name over a state line. */
+#docker_list tr.cv-stack > td { padding: 8px; }
+#docker_list .cv-stack-icon .img { width: 32px; height: 32px; font-size: 28px; text-align: center; }
+#docker_list .cv-stack-name { line-height: 1.6; }
+#docker_list tr.cv-stack .cv-chev { opacity: .7; }
+#docker_list .cv-stack-name .fa-play, #docker_list .cv-stack-name .fa-square { margin-right: 6px; }
+/* Members of an expanded stack: one step in, with a guide line. */
+#docker_list tr[data-cv-stack].sortable > td.ct-name { padding-left: 40px !important;
+  background-image: linear-gradient(to right, transparent 23px, rgba(127, 127, 127, .45) 23px, rgba(127, 127, 127, .45) 25px, transparent 25px); }
+/* Sticky headers (positions worked out on scroll in containerview.js): the
+   current group's row and its passing stack's row get .cv-pinned and a
+   --cv-pin-top, which pushes them up as their last row arrives. Opaque page
+   background so rows scrolling underneath don't show through. */
+#docker_list tr.cv-pinned > td { position: sticky; top: var(--cv-pin-top, 0px); z-index: 20;
+  background-color: var(--background-color, #1c1b1b); }
+#docker_list tr.cv-stack.cv-pinned > td { z-index: 19; }
+/* Beats jQuery's inline display from $('.advanced').show() on orphan rows. */
+#docker_list tr.cv-collapsed { display: none !important; }
+
+/* Filter bar: sticky above the table, painted with the theme's page
+   background so scrolled rows don't show through. Chips use the theme's
+   --brand-orange, the active tab's outline colour. */
+#cv-bar { position: sticky; top: 0; z-index: 100; padding: 8px 0 14px; background-color: var(--background-color, #1c1b1b);
+  border-bottom: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+#cv-bar .cv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+#cv-bar .cv-row + .cv-row { margin-top: 8px; }
+#cv-bar #cv-filter { width: 480px; max-width: 40vw; min-width: 180px; margin: 0; }
+#cv-bar #cv-filter::placeholder { color: currentColor; opacity: .4; }
+#cv-bar label[for=cv-filter] { margin: 0; }
+#cv-bar .cv-chips, #cv-bar .cv-mode, .cv-dash-bar .cv-chips, .cv-dash-bar .cv-mode { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+#cv-bar .cv-sep, .cv-dash-bar .cv-sep { padding-left: 10px; border-left: 1px solid var(--disabled-input-border-color, currentColor); }
+#cv-bar .cv-chip, .cv-dash-bar .cv-chip { cursor: pointer; user-select: none; padding: 2px 9px; border: 1px solid var(--brand-orange, #f0a30a); border-radius: 10px; white-space: nowrap; }
+#cv-bar .cv-chip small, .cv-dash-bar .cv-chip small { opacity: .7; }
+#cv-bar .cv-chip:hover, .cv-dash-bar .cv-chip:hover { background: color-mix(in srgb, var(--brand-orange, #f0a30a) 12%, transparent); }
+#cv-bar .cv-chip.cv-on, .cv-dash-bar .cv-chip.cv-on { font-weight: bold; background: color-mix(in srgb, var(--brand-orange, #f0a30a) 30%, transparent); }
+#cv-bar .cv-mode .cv-chip, .cv-dash-bar .cv-mode .cv-chip { border-radius: 0; }
+#cv-bar .cv-mode .cv-chip:first-child, .cv-dash-bar .cv-mode .cv-chip:first-child { border-radius: 10px 0 0 10px; }
+#cv-bar .cv-mode .cv-chip:last-child, .cv-dash-bar .cv-mode .cv-chip:last-child { border-radius: 0 10px 10px 0; }
+/* Segmented controls (Any|All, Running|Paused|Stopped, All|None): joined chips. */
+#cv-bar .cv-mode, .cv-dash-bar .cv-mode, .cv-updpick .cv-mode { gap: 0; }
+#cv-bar .cv-mode .cv-chip + .cv-chip, .cv-dash-bar .cv-mode .cv-chip + .cv-chip, .cv-updpick .cv-mode .cv-chip + .cv-chip { border-left: none; }
+#cv-bar #cv-clear { display: none; }
+/* Count + load + expand/collapse-all toggle on the right, laid out like a group header's stats. */
+#cv-bar #cv-shown { margin-left: auto; display: inline-flex; align-items: center; gap: 14px; padding-right: 8px; }
+#cv-bar #cv-count, #cv-bar #cv-total-load { opacity: .7; }
+#cv-bar .cv-all, .cv-dash-bar .cv-all { cursor: pointer; padding: 0 4px; font-size: 1.2em; opacity: .7; }
+#cv-bar .cv-all:hover, .cv-dash-bar .cv-all:hover { opacity: 1; }
+.cv-dash-bar .cv-dash-right { display: inline-flex; align-items: center; gap: 14px; }
+
+/* A container's other categories, under its name (it renders in one group only). */
+#docker_list .cv-tags { display: block; margin: 6px 0 0 42px; }
+#docker_list .cv-tag { display: inline-block; margin: 0 4px 2px 0; padding: 0 7px; font-size: .85em; line-height: 1.6;
+  border: 1px solid var(--brand-orange, #f0a30a); border-radius: 9px; opacity: .8; white-space: nowrap; }
+
+/* Per-group expand/collapse-its-stacks toggle, at the end of the header's stats. */
+#docker_list .cv-stacks { cursor: pointer; padding: 0 4px; font-size: 1.2em; opacity: .7; }
+#docker_list .cv-stacks:hover { opacity: 1; }
+#docker_list .cv-stacks.cv-off { display: none; }
+
+/* Keyboard focus on our controls (role=button spans/divs). */
+#cv-bar [role=button]:focus-visible, #docker_list [role=button]:focus-visible { outline: 2px solid var(--brand-orange, #f0a30a); outline-offset: 2px; }
+
+/* Group icon (32px, like container/stack icons) - and group/stack icons open their actions menu. */
+#docker_list .cv-group-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; font-size: 24px; font-weight: normal; }
+/* Icon + name: one element that opens the group's / stack's menu. */
+#docker_list .cv-menu-icon, #docker_view .cv-menu-icon { cursor: pointer; display: inline-flex; align-items: center; gap: 10px; }
+.cv-confirm-list { max-height: 30vh; overflow-y: auto; text-align: left; margin-top: 8px; }
+/* Group icon picker. */
+.cv-iconpick .cv-ip-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.cv-iconpick .cv-ip-grid .fa { cursor: pointer; font-size: 22px; padding: 8px 0; text-align: center; border: 1px solid transparent; border-radius: 4px; }
+.cv-iconpick .cv-ip-grid .fa:hover, .cv-iconpick .cv-ip-grid .fa:focus-visible { border-color: var(--brand-orange, #f0a30a); outline: none; }
+.cv-iconpick .cv-ip-grid .fa.cv-on { background: color-mix(in srgb, var(--brand-orange, #f0a30a) 30%, transparent); }
+.cv-iconpick .cv-ip-msg { min-height: 1.2em; }
+
+/* Settings cog, right of Unraid's Basic/Advanced View switch - whose label
+   and slider are float:left, so the cog floats too to stay on their line. */
+.cv-cog { float: left; cursor: pointer; margin: 0 0 0 4px; font-size: 1.4rem; line-height: 1; opacity: .7; }
+.cv-cog:hover, .cv-cog:focus-visible { opacity: 1; outline: none; }
+/* Unraid's button row when placed at the top: above the filter bar, divided from it. */
+#cv-actions.cv-top { padding: 4px 0 12px; margin-bottom: 4px; border-bottom: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+/* Container-state chips: their own row under a divider. */
+#cv-bar .cv-states-row { margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+
+/* Alignment setting (cog): every row's content and Unraid's buttons follow
+   it; on the state row the chips follow and the count stays at the right. */
+#cv-bar.cv-align-center .cv-row:not(.cv-states-row) { justify-content: center; }
+#cv-bar.cv-align-right .cv-row:not(.cv-states-row) { justify-content: flex-end; }
+#cv-actions.cv-align-left { text-align: left; }
+#cv-actions.cv-align-center { text-align: center; }
+#cv-actions.cv-align-right { text-align: right; }
+#cv-bar.cv-align-center .cv-states-row { display: grid; grid-template-columns: 1fr auto 1fr; }
+#cv-bar.cv-align-center .cv-states-row::before { content: ''; }
+#cv-bar.cv-align-center #cv-shown { justify-self: end; }
+#cv-bar.cv-align-right #cv-states { margin-left: auto; }
+#cv-bar.cv-align-right #cv-shown { margin-left: 0; }
+/* The cog menu sits at the right edge, so Unraid's context menu flips its
+   submenus left - with left:-100% (the parent's width), which leaves a gap
+   when the submenu is narrower, and crossing the gap drops :hover. Anchor
+   flipped submenus flush to the parent instead (our menu only). */
+#dropdown-cv-cog .dropdown-submenu > .dropdown-menu.drop-left { left: auto; right: 100%; margin-left: 0; margin-right: -1px; }
+
+/* Category rule editor and list (jQuery UI dialogs). */
+.cv-rule p { margin: 0 0 8px; }
+.cv-rule .cv-rule-field { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.cv-rule .cv-rule-field span { width: 4em; }
+.cv-rule .cv-rule-field input[type=text], .cv-rule .cv-rule-cats { flex: 1; width: 100%; margin: 0; box-sizing: border-box; }
+.cv-rule input[type=text]:disabled { opacity: .45; }
+.cv-rule .cv-rule-cats { display: block; margin-top: 4px; }
+.cv-rule-hint { opacity: .7; font-size: .9em; }
+.cv-rule .cv-tag { display: inline-block; cursor: pointer; margin: 0 4px 4px 0; padding: 0 7px; font-size: .85em; line-height: 1.6;
+  border: 1px solid var(--brand-orange, #f0a30a); border-radius: 9px; white-space: nowrap; }
+.cv-rule .cv-tag:hover, .cv-rule .cv-tag:focus-visible { background: color-mix(in srgb, var(--brand-orange, #f0a30a) 30%, transparent); outline: none; }
+.cv-rule-preview { min-height: 1.2em; }
+.cv-rule-msg { min-height: 1.2em; }
+.cv-rules-list { width: 100%; border-collapse: collapse; }
+.cv-rules-list td { padding: 4px 6px; border-bottom: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+.cv-rules-list .cv-rule-ops { white-space: nowrap; text-align: right; }
+.cv-rules-list .cv-rule-ops .fa { cursor: pointer; padding: 2px 4px; opacity: .7; }
+.cv-rules-list .cv-rule-ops .fa:hover, .cv-rules-list .cv-rule-ops .fa:focus-visible { opacity: 1; outline: none; }
+
+/* Category rule badge on a container's or stack's icon: orange when the rule
+   gives the categories, dimmed when a label wins. Container rows only carry
+   data-cv-rule (their markup stays native), so the badge is a pseudo-element
+   on the icon's span.hand; stack icons get a real element with a tooltip. */
+#docker_list tr[data-cv-rule] td.ct-name span.hand, #docker_list .cv-stack-icon,
+#docker_view span.outer[data-cv-rule] > span.hand, #docker_view .cv-dash-stack > span.hand { position: relative; display: inline-block; }
+/* The Dashboard gives span.hand z-index: 1001, which only bites once it's
+   positioned (as above) - and then lifts the icon over Unraid's menus (1000). */
+#docker_view span.outer[data-cv-rule] > span.hand, #docker_view .cv-dash-stack > span.hand { z-index: auto; }
+#docker_list tr[data-cv-rule] td.ct-name span.hand::after, #docker_list .cv-rule-badge,
+#docker_view span.outer[data-cv-rule] > span.hand::after, #docker_view .cv-rule-badge {
+  position: absolute; right: 4px; bottom: -2px; width: 15px; height: 15px; line-height: 15px; font-size: 9px;
+  text-align: center; border-radius: 50%; color: #fff; background: var(--brand-orange, #f0a30a);
+  box-shadow: 0 0 0 1.5px var(--background-color, #1c1b1b); }
+#docker_list tr[data-cv-rule] td.ct-name span.hand::after, #docker_view span.outer[data-cv-rule] > span.hand::after { content: '\f02b'; font-family: FontAwesome; font-style: normal; font-weight: normal; }
+#docker_list tr[data-cv-rule=off] td.ct-name span.hand::after, #docker_list .cv-rule-badge.cv-off,
+#docker_view span.outer[data-cv-rule=off] > span.hand::after, #docker_view .cv-rule-badge.cv-off { background: #888; opacity: .7; }
+
+/* Dashboard: the Docker Containers tile in sections per category. */
+/* The tile floats its icons (span.outer); each section contains its own. */
+#docker_view .cv-dash-group { clear: both; margin: 2px 0 6px; }
+/* Spacing: ~12px under a heading, ~16px from the last row to the next
+   heading. The native icons' 20px bottom margin (also the gap between rows)
+   is pulled in after the last row by the body's negative margin. */
+#docker_view .cv-dash-body { display: flow-root; padding-left: 12px; margin-bottom: -16px; }
+/* Native icons sit edge to edge (span.outer has margin-right: 0). Each icon is
+   ~195px with this gap: three must fit beside the 12px left padding. */
+#docker_view .cv-dash-body > span.outer { margin-right: 10px; }
+/* Long names: cut with an ellipsis at the native 143px name column (Unraid
+   lets them run on over the next icon or out of the tile); the full name is
+   the name's tooltip. */
+#docker_view .cv-dash-body span.inner > span:first-child { display: inline-block; max-width: 100%; vertical-align: top;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The sections scroll inside the tile (up to 50% of the window); each heading sticks to the top of the
+   scroll area while its section is in view (--cv-dash-bg: the tile's own
+   background, set by JS, so pinned headings are opaque in every theme). */
+#docker_view .cv-dash-scroll { max-height: 50vh; overflow-y: auto; overscroll-behavior: contain; }
+#docker_view .cv-dash-hd { position: sticky; top: 0; z-index: 2; background-color: var(--cv-dash-bg, var(--background-color, #1c1b1b)); }
+#docker_view .cv-dash-hd { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
+  padding: 4px 2px; margin-bottom: 12px; border-bottom: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+#docker_view .cv-dash-hd .cv-chev { width: 1em; opacity: .7; transition: transform .15s; }
+#docker_view .cv-dash-hd .cv-chev.cv-closed { transform: rotate(-90deg); }
+#docker_view .cv-dash-icon { width: 1.2em; text-align: center; }
+#docker_view .cv-dash-title { font-weight: bold; }
+#docker_view .cv-dash-count { margin-left: auto; opacity: .7; }
+#docker_view .cv-dash-hd [role=button]:focus-visible { outline: 2px solid var(--brand-orange, #f0a30a); outline-offset: 2px; }
+#docker_view .cv-dash-closed .cv-dash-body, #docker_view .cv-dash-empty { display: none; }
+
+/* Dashboard filter row (chips share the tab bar's styles above). */
+.cv-dash-bar { padding: 4px 0 8px; }
+.cv-dash-bar .cv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.cv-dash-bar .cv-row + .cv-row { margin-top: 6px; }
+.cv-dash-bar .cv-dash-text { flex: 0 1 320px; min-width: 140px; margin: 0; }
+.cv-dash-bar label { margin: 0; }
+.cv-dash-bar .cv-dash-states-row { margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--disabled-input-border-color, rgba(127, 127, 127, .4)); }
+.cv-dash-bar.cv-align-center .cv-row:not(.cv-dash-states-row) { justify-content: center; }
+.cv-dash-bar.cv-align-right .cv-row:not(.cv-dash-states-row) { justify-content: flex-end; }
+/* State row: chips follow the alignment, the update button stays at the right (as on the tab). */
+.cv-dash-bar .cv-dash-right { margin-left: auto; padding-right: 6px; }
+.cv-dash-bar.cv-align-center .cv-dash-states-row { display: grid; grid-template-columns: 1fr auto 1fr; }
+.cv-dash-bar.cv-align-center .cv-dash-states-row::before { content: ''; }
+.cv-dash-bar.cv-align-center .cv-dash-right { justify-self: end; }
+.cv-dash-bar.cv-align-right .cv-dash-states { margin-left: auto; }
+.cv-dash-bar.cv-align-right .cv-dash-right { margin-left: 0; }
+.cv-dash-bar .cv-dash-text::placeholder { color: currentColor; opacity: .4; }
+.cv-dash-bar [role=button]:focus-visible { outline: 2px solid var(--brand-orange, #f0a30a); outline-offset: 2px; }
+#docker_view .cv-dash-body > span.outer.cv-dash-out { display: none !important; }
+
+/* Update button (after Clear, both bars): icon with a count badge. */
+.cv-upd { position: relative; display: inline-block; cursor: pointer; padding: 0 6px; font-size: 1.5em; line-height: 1; opacity: .8; }
+.cv-upd:hover, .cv-upd:focus-visible { opacity: 1; outline: none; }
+.cv-upd:focus-visible { outline: 2px solid var(--brand-orange, #f0a30a); outline-offset: 2px; }
+.cv-upd .cv-upd-n { position: absolute; top: -7px; right: -6px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box;
+  border-radius: 8px; font-size: 10px; line-height: 16px; font-weight: bold; text-align: center; color: #fff;
+  background: var(--brand-orange, #f0a30a); box-shadow: 0 0 0 1.5px var(--background-color, #1c1b1b); }
+/* Update picker dialog. */
+.cv-updpick .cv-up-tools { display: flex; justify-content: center; margin: 0 0 8px; }
+.cv-updpick .cv-mode { display: inline-flex; }
+.cv-updpick .cv-up-tools .cv-chip { cursor: pointer; user-select: none; padding: 2px 9px; border: 1px solid var(--brand-orange, #f0a30a); }
+.cv-updpick .cv-up-tools .cv-chip:first-child { border-radius: 10px 0 0 10px; }
+.cv-updpick .cv-up-tools .cv-chip:last-child { border-radius: 0 10px 10px 0; }
+.cv-updpick .cv-up-tools .cv-chip:hover, .cv-updpick .cv-up-tools .cv-chip:focus-visible { background: color-mix(in srgb, var(--brand-orange, #f0a30a) 30%, transparent); outline: none; }
+.cv-updpick .cv-up-list { max-height: 40vh; overflow-y: auto; }
+.cv-updpick .cv-up-list label { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; }
+.cv-updpick .cv-up-list label input { margin: 0; }
+/* Container icons at three-quarters of the list's 32px. */
+.cv-updpick .cv-up-list .img { width: 24px; height: 24px; margin: 0; font-size: 24px; line-height: 24px; text-align: center; flex: none; }
+.cv-updpick .cv-up-skip { opacity: .5; }
+.cv-updpick .cv-up-msg { margin: 8px 0 0; opacity: .7; }
+.cv-updpick .cv-up-bg { margin: 8px 0 0; }
+.cv-updpick .cv-up-bg label { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+.cv-updpick .cv-up-bg input { margin: 0; }
+
+/* The filter box stands out (both bars): label, typed text and hint bigger and bold. */
+#cv-bar label[for=cv-filter], #cv-bar #cv-filter, .cv-dash-bar label, .cv-dash-bar .cv-dash-text { font-size: 1.2em; font-weight: bold; }
+/* The hint takes the box's size already; another 1.2em would compound. */
+#cv-bar #cv-filter::placeholder, .cv-dash-bar .cv-dash-text::placeholder { font-weight: bold; }

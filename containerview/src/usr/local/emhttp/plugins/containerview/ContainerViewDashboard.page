@@ -1,0 +1,22 @@
+Menu="Dashboard"
+Markdown="false"
+---
+<?php
+// Groups the Dashboard's Docker Containers tile by category, like the Docker
+// tab (containerview-dashboard.js). The tile's icons stay exactly as Unraid
+// renders them; they're only moved into per-category sections, and a compose
+// stack's members behind one stack icon.
+$cvSettings = json_decode((string)@file_get_contents('/boot/config/plugins/containerview/settings.json'), true) ?: [];
+if (($cvSettings['enabled'] ?? 'yes') !== 'no'):
+?>
+<link type="text/css" rel="stylesheet" href="<?autov('/plugins/containerview/containerview.css')?>">
+<script>
+window.CV_CONFIG = {
+  csrf: <?= json_encode($var['csrf_token'] ?? '') ?>,
+  settings: <?= json_encode((object)$cvSettings) ?>
+};
+</script>
+<script src="<?autov('/plugins/containerview/containerview-core.js')?>"></script>
+<script src="<?autov('/plugins/containerview/containerview-menus.js')?>"></script>
+<script src="<?autov('/plugins/containerview/containerview-dashboard.js')?>"></script>
+<?php endif; ?>

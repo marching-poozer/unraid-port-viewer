@@ -1,0 +1,29 @@
+Menu="Docker"
+Markdown="false"
+---
+<?php
+// Untitled Menu="Docker" page: Unraid sorts it after the native
+// DockerContainers.page ("1DockerContainers" < "ContainerViewDocker") and
+// emits its body after that page's own <script>, so containerview.js runs
+// after the native loadlist()/listview() are defined but before the native
+// $(ready) handler calls loadlist(true) - which is what lets it take over.
+//
+// Only present when the native Containers page is ($cpus is one of its
+// locals); on any other Docker sub-page there is nothing to take over.
+if (isset($cpus)):
+?>
+<link type="text/css" rel="stylesheet" href="<?autov('/plugins/containerview/containerview.css')?>">
+<script>
+window.CV_CONFIG = {
+  readmore: <?= json_encode(($dockercfg['DOCKER_READMORE'] ?? 'yes') === 'yes') ?>,
+  cpuCount: <?= json_encode(count($cpus) * count(preg_split('/[,-]/', $cpus[0]))) ?>,
+  decimal: <?= json_encode(_var($display, 'number', '.,')[0]) ?>,
+  csrf: <?= json_encode($var['csrf_token'] ?? '') ?>,
+  // Cog settings (include/settings.php); defaults applied in containerview.js.
+  settings: <?= json_encode((object)(json_decode((string)@file_get_contents('/boot/config/plugins/containerview/settings.json'), true) ?: [])) ?>
+};
+</script>
+<script src="<?autov('/plugins/containerview/containerview-core.js')?>"></script>
+<script src="<?autov('/plugins/containerview/containerview-menus.js')?>"></script>
+<script src="<?autov('/plugins/containerview/containerview.js')?>"></script>
+<?php endif; ?>
