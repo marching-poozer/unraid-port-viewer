@@ -1,15 +1,14 @@
 # Proxy Hosts
 
-Adds a small on/off badge next to every published port on the **Docker**
-page. Turning it on creates a matching Nginx Proxy Manager (NPM) proxy
-host — reusing an existing certificate (e.g. a wildcard) instead of
-requesting a new one; turning it off removes it. Optionally keeps a
-matching Pi-hole CNAME record (pointing at the NPM host) in sync too.
+Adds a control under each container's name on the **Docker** tab for managing
+its Nginx Proxy Manager (NPM) proxy host: create one (reusing an existing
+certificate, such as a wildcard, rather than requesting a new one), edit its
+domains, pause or disable it, or remove it. Optionally keeps a matching
+Pi-hole CNAME record for each domain in sync.
 
-Configure NPM/Pi-hole once under **Settings -> Network Services -> Proxy
-Hosts** — unlike a browser extension, this is shared by every user of this
-WebGUI, and every NPM/Pi-hole request runs from the Unraid box itself via
-curl, not from inside anyone's browser tab.
+Configure NPM and Pi-hole once under **Settings -> Network Services -> Proxy
+Hosts**. The settings are shared by everyone who uses this web UI, and every
+NPM and Pi-hole request is made by the Unraid server itself, not by a
+browser.
 
-See the project README for how the Docker-page badge, popovers, and
-certificate matching work.
+Full documentation: [Proxy Hosts README](https://github.com/marching-poozer/unraid-port-viewer/blob/main/proxyhosts/README.md).

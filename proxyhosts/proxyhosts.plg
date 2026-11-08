@@ -4,7 +4,7 @@
 <!ENTITY name      "proxyhosts">
 <!ENTITY author    "poozer">
 <!ENTITY version   "2026.11.08">
-<!ENTITY md5       "20ae9476f3ee7a78025d5972f3727dae">
+<!ENTITY md5       "a686013515ee9a45ec0ee197531074ea">
 <!ENTITY pkg       "&name;-&version;-noarch-1">
 <!ENTITY launch    "Settings/ProxyHostsSettings">
 <!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/proxyhosts">
@@ -16,27 +16,26 @@
         pluginURL="&repo;/proxyhosts.plg"
         icon="proxyhosts.png"
         min="7.0.0"
-        comment="Adds an on/off badge to each Docker port that creates/removes a matching Nginx Proxy Manager host (and Pi-hole CNAME)."
+        comment="Adds an Add / Edit Proxy Host control to each Docker container to create and manage its Nginx Proxy Manager host (and optional Pi-hole CNAME)."
         support="https://github.com/marching-poozer/unraid-port-viewer">
 
 <CHANGES>
-Adds a small badge next to every published port on the Docker Containers
-page. Turning it on creates a matching Nginx Proxy Manager proxy host —
-reusing an existing certificate (e.g. a wildcard) instead of requesting a
-new one; turning it off removes it. Optionally keeps a matching Pi-hole
-CNAME in sync too.
+Manages Nginx Proxy Manager (NPM) proxy hosts from the Docker tab. Each
+container gets an Add / Edit Proxy Host control under its name; optionally
+keeps a matching Pi-hole CNAME in sync for every domain too.
 
 Highlights
-- Badge lives directly on the native Docker page (hooks Menu="Docker", the
-  same mechanism the community Docker Folder plugin uses) - no separate tab
-  to remember to check.
-- All NPM/Pi-hole calls happen server-side via curl, so there's no browser
-  CORS/mixed-content dance and no per-browser settings to re-enter.
-- Reads container port bindings from `docker ps`/`docker inspect` directly
-  instead of scraping the rendered table text.
-- Settings (NPM login, Pi-hole app password, base domain for suggested
-  names) live under Settings -&gt; Network Services, shared by every user of
-  this WebGUI instead of living in one browser's local storage.
+- Create a proxy host for a container from a small form: domain, an existing
+  certificate (an exact or one-level wildcard match is picked for you), Force
+  SSL and websocket upgrade. Certificates are reused, never requested.
+- Edit it later: add, remove, pause or resume individual domains, disable or
+  enable the whole host, or delete it.
+- Can forward straight to the container's name and port when it shares a
+  Docker network with NPM, instead of the LAN-published port.
+- Hosts made in NPM by hand are recognised by where they forward to.
+- All NPM and Pi-hole calls are made by the Unraid server (curl), so there is
+  no CORS or per-browser setup; settings live under Settings -&gt; Network
+  Services -&gt; Proxy Hosts and are shared by every user of the web UI.
 
 ###2026.11.08
 - Moved into the combined plugins repository (marching-poozer/unraid-port-viewer).
