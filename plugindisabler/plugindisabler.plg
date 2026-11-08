@@ -1,0 +1,86 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "plugindisabler">
+<!ENTITY author    "poozer">
+<!ENTITY version   "2026.11.08">
+<!ENTITY md5       "375cd05413c872db8c295bdd9c9d94cf">
+<!ENTITY pkg       "&name;-&version;-noarch-1">
+<!ENTITY launch    "Plugins/Manage">
+<!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/plugindisabler">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;"
+        pluginURL="&repo;/plugindisabler.plg"
+        icon="plugindisabler.png"
+        min="7.0.0"
+        comment="Adds a Manage tab to the Plugins page for temporarily disabling other plugins' GUI pages, for diagnosis."
+        support="https://github.com/marching-poozer/unraid-port-viewer">
+
+<CHANGES>
+Adds a "Manage" tab next to "Installed Plugins" on the native Plugins page.
+Each row is an installed plugin with a toggle that disables/enables all of
+its .page files at once (renaming Foo.page to Foo.page.disabled, so
+Unraid's own menu scanner skips it - nothing is deleted or uninstalled).
+Plugins with more than one .page file expand to toggle individual pages,
+for isolating which one of several is actually causing a problem.
+
+Purely a diagnostic tool: disabling is reversible instantly (flip the
+toggle back) and automatically on the next reboot, since /usr/local is
+rebuilt from the boot flash's plugin archives every time.
+
+dynamix.plugin.manager - which provides the Plugins page this tool's own
+tab lives inside - is excluded from the list, so it can't disable the one
+page that would let you undo it short of a reboot.
+
+###2026.11.08
+- Moved into the combined plugins repository (marching-poozer/unraid-port-viewer).
+  The update URL changed. Package rebuilt from the current source.
+
+###2026.10.22
+- Initial scaffold.
+</CHANGES>
+
+<!-- Pre-install cleanup: remove any prior plugindisabler packages and clear
+     the install dir so stale .page files from earlier versions don't
+     register duplicate menu entries. Safe to re-run. -->
+<FILE Run="/bin/bash">
+<INLINE>
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+</INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/&pkg;.txz">
+<URL>&repo;/archive/&pkg;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<FILE Run="upgradepkg --install-new">
+<LOCAL>&plgPATH;/&pkg;.txz</LOCAL>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+# Restore anything this tool left disabled elsewhere before removing it -
+# otherwise another plugin's page could stay hidden indefinitely with
+# nothing left installed that could re-enable it short of a reboot.
+for f in /usr/local/emhttp/plugins/*/*.page.disabled; do
+  [ -f "$f" ] || continue
+  mv "$f" "${f%.disabled}"
+done
+for pkg in /var/log/packages/&name;-*; do
+  [ -f "$pkg" ] || continue
+  removepkg "$(basename "$pkg")" 2&gt;/dev/null || true
+done
+rm -rf &emhttp;
+rm -rf &plgPATH;
+</INLINE>
+</FILE>
+
+</PLUGIN>

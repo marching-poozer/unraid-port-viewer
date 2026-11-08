@@ -1,0 +1,90 @@
+/* The table itself reuses Unraid's own 'unraid tablesorter plugins' classes
+   (the same ones dynamix.plugin.manager's Installed Plugins table uses),
+   so striping/borders/header styling come for free from the native
+   stylesheet - only layout details specific to this tab's extra rows live
+   here. */
+
+.pd-toolbar {
+  margin-bottom: 8px;
+}
+
+.pd-plugin-id {
+  color: #888;
+  font-weight: normal;
+}
+
+/* Sits below the description, not next to the plugin name - the name is
+   right next to the description's own readmore expand/collapse chevron
+   when it's long enough to truncate, and having a second, differently-
+   targeted expand control right there read as controlling the same
+   thing. */
+.pd-components-toggle {
+  cursor: pointer;
+  color: #8ab4e8;
+  margin-top: 6px;
+  margin-left: 112px;
+  display: inline-block;
+}
+
+.pd-components-toggle i {
+  width: 12px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Sub-rows are real sibling <tr>s of #pd_table (not a nested <table> per
+   plugin group - that computed an independent column width per group,
+   which is why toggles landed at a different x position in every expanded
+   group). The label+toggle pair lives in a FIXED-width grid, scoped to
+   this merged cell only - the outer table/parent rows stay full width,
+   same as the native Installed Plugins table. Not sized to each row's own
+   content (that put every group's toggle at a different x again) and not
+   stretched to fill a percentage of the row (that squeezed longer labels
+   into too little space and wrapped them). A fixed label column is what
+   gets every sub-row's toggle to the same x regardless of label length;
+   the label itself clips to an ellipsis rather than wrap, with its full
+   text still available via the title attribute on hover. */
+.pd-page-row {
+  display: grid;
+  grid-template-columns: 360px auto;
+  align-items: center;
+  column-gap: 40px;
+  padding-left: 112px;
+}
+
+.pd-page-label {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* switchButton() inserts extra sibling elements around the checkbox
+   (OFF/slider/ON labels), not just restyles it in place - without this
+   wrapper those extra elements became additional direct children of the
+   2-column grid above and overflowed onto an implicit second row. */
+.pd-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* jquery.switchbutton.js has no disabled state of its own (its click
+   handlers are bound straight to the slider elements it generates,
+   regardless of the underlying checkbox's disabled attribute) - applied
+   in plugindisabler.js to whatever wraps a disabled .pd-toggle's switch,
+   so system-plugin rows actually read (and behave) as read-only instead
+   of just looking identical to an enabled one. */
+.pd-readonly {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pd-page-menu {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.pd-system-tag {
+  color: #888;
+  font-style: italic;
+}

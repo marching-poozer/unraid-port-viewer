@@ -1,0 +1,27 @@
+Menu="Plugins:10"
+Type="php"
+Title="Manage"
+Icon="plugindisabler.png"
+---
+<?php
+// Menu="Plugins:10" (not Title-less, unlike proxyhosts' Docker-page hook)
+// registers this as a genuine second TAB on the native "Plugins" page
+// (dynamix.plugin.manager/Plugins.page, itself Type="xmenu" Tabs="true"),
+// not a new top-level nav item and not inline-injected rows in its table -
+// see DefaultPageLayout.php's xmenu loop: a child page's own Title is what
+// makes the loader wrap it in a new <div class="tab"> rather than just
+// concatenating its body into whatever tab is already open.
+require_once "$docroot/plugins/plugindisabler/include/common.php";
+?>
+<link type="text/css" rel="stylesheet" href="/webGui/styles/jquery.switchbutton.css">
+<link type="text/css" rel="stylesheet" href="/plugins/plugindisabler/plugindisabler.css">
+<script type="text/javascript" src="/webGui/javascript/jquery.switchbutton.js"></script>
+<div class="pd-toolbar">
+  <span class="status vhshift"><input type="checkbox" class="pd-advancedview"></span>
+</div>
+<table class='unraid tablesorter plugins' id='pd_table'>
+<thead><tr><th></th><th>Plugin</th><th>Author</th><th>Enabled</th></tr></thead>
+<tbody id="pd_list"><tr><td colspan="4"></td></tr></tbody>
+</table>
+<script>window.PD_CSRF_TOKEN = <?= json_encode($var['csrf_token']) ?>;</script>
+<script type="text/javascript" src="/plugins/plugindisabler/plugindisabler.js"></script>
