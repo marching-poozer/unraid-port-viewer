@@ -4,7 +4,7 @@
 <!ENTITY name      "plugindisabler">
 <!ENTITY author    "poozer">
 <!ENTITY version   "2026.11.08">
-<!ENTITY md5       "375cd05413c872db8c295bdd9c9d94cf">
+<!ENTITY md5       "bb5e2e97e29c409f51079241a9f7fc09">
 <!ENTITY pkg       "&name;-&version;-noarch-1">
 <!ENTITY launch    "Plugins/Manage">
 <!ENTITY repo      "https://raw.githubusercontent.com/marching-poozer/unraid-port-viewer/main/plugindisabler">
@@ -21,19 +21,22 @@
 
 <CHANGES>
 Adds a "Manage" tab next to "Installed Plugins" on the native Plugins page.
-Each row is an installed plugin with a toggle that disables/enables all of
-its .page files at once (renaming Foo.page to Foo.page.disabled, so
+Each row is a plugin with a toggle that disables/enables all of its .page
+files at once (renaming Foo.page to Foo.page.disabled, so
 Unraid's own menu scanner skips it - nothing is deleted or uninstalled).
 Plugins with more than one .page file expand to toggle individual pages,
-for isolating which one of several is actually causing a problem.
+for isolating which one of several is actually causing a problem. Basic View
+(the default) lists installed plugins; Advanced View also lists the pieces
+that ship with Unraid itself, read-only.
 
 Purely a diagnostic tool: disabling is reversible instantly (flip the
 toggle back) and automatically on the next reboot, since /usr/local is
 rebuilt from the boot flash's plugin archives every time.
 
 dynamix.plugin.manager - which provides the Plugins page this tool's own
-tab lives inside - is excluded from the list, so it can't disable the one
-page that would let you undo it short of a reboot.
+tab lives inside - and this plugin itself are excluded from the list, so
+neither can disable the one page that would let you undo it short of a
+reboot. Only GUI pages are affected; background services keep running.
 
 ###2026.11.08
 - Moved into the combined plugins repository (marching-poozer/unraid-port-viewer).
